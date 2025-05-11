@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persistent To-Do List</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 350px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Input & Button */
+        input {
+            width: 70%;
+            padding: 10px;
+            border: 2px solid #6a11cb;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 15px;
+            background: #6a11cb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #4a08b1;
+        }
+
+        /* Task List */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #8b5cf6;
+            color: white;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        li:hover {
+            background: #7c3aed;
+        }
+
+        .delete-btn {
+            background: #d32f2f;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background: #b71c1c;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>📝 Persistent To-Do List</h2>
+        <input type="text" id="taskInput" placeholder="Add a new task">
+        <button onclick="addTask()">Add</button>
+        <ul id="taskList"></ul>
+    </div>
+
+    <script>
+        let todoList = JSON.parse(localStorage.getItem("tasks")) || []; // Load tasks from Local Storage
+
+        function addTask() {
+            let taskInput = document.getElementById("taskInput");
+            let taskText = taskInput.value.trim();
+            
+            if (taskText !== "") {
+                todoList.push(taskText);
+                localStorage.setItem("tasks", JSON.stringify(todoList)); // Save to Local Storage
+                taskInput.value = ""; // Clear input field
+                displayTasks();
+            } else {
+                alert("Please enter a task!");
+            }
+        }
+
+        function removeTask(index) {
+            todoList.splice(index, 1);
+            localStorage.setItem("tasks", JSON.stringify(todoList)); // Update Local Storage
+            displayTasks();
+        }
+
+        function displayTasks() {
+            let taskList = document.getElementById("taskList");
+            taskList.innerHTML = "";
+
+            todoList.forEach((task, index) => {
+                let li = document.createElement("li");
+                li.innerHTML = `${task} <button class="delete-btn" onclick="removeTask(${index})">❌</button>`;
+                taskList.appendChild(li);
+            });
+        }
+
+        displayTasks(); // Show tasks when page loads
+    </script>
+
+</body>
+</html>
